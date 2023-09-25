@@ -1,0 +1,7 @@
+Pillow==10.0.1
+PyExifTool==0.5.5
+pytesseract==0.3.10
+python_magic==0.4.27
+PyYAML==6.0
+tika==2.6.0
+tqdm==4.65.0
