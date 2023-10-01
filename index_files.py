@@ -5,9 +5,9 @@ import  exiftool
 import os
 import subprocess
 import yaml
-# from PIL import Image
+from PIL import Image
 # from tika import parser
-# import pytesseract
+import pytesseract
 import magic
 import json
 
@@ -77,28 +77,25 @@ def get_metadata(file):
     
 
 # Function to get content of a file
-# def get_content(file, mime_type_exif):
-#     print(file, mime_type_exif)
-
-#     content = ""
-#     # print(mime_type_exif)
-#     # print(file)
-#     try:
-#         if mime_type_exif in ["image/jpeg", "image/png", "image/bmp", "image/tiff", "image/gif"]:
-#             img = Image.open(file)
-#             content = pytesseract.image_to_string(img, lang='chi_sim')
-#             return content
-#         elif mime_type_exif in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
-#             print("Not doing excel for now.")
-#             pass
-#         elif mime_type_exif in ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/csv", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint", "application/pdf", "text/html", "application/xhtml+xml", "text/plain", "application/msword"]:
-#             raw = parser.from_file(file)
-#             return raw['content']
-#         else:
-#             print(f"Unsupported file type: {mime_type_exif}")
-#     except Exception as e:
-#         print(f"Error occurred while processing file: {file}. Error message: {str(e)}")
-#     return
+def get_content(file, mime_type_exif):
+    print(file, mime_type_exif)
+    content = ""
+    try:
+        if mime_type_exif in ["image/jpeg", "image/png", "image/bmp", "image/tiff", "image/gif"]:
+            content = subprocess.run(["tesseract", file, "stdout", "-l", "chi_sim"], capture_output=True, text = True)
+            content = content.stdout
+            return content
+        elif mime_type_exif in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
+            print("Not doing excel for now.")
+            pass
+        elif mime_type_exif in ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/csv", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint", "application/pdf", "text/html", "application/xhtml+xml", "text/plain", "application/msword"]:
+            raw = parser.from_file(file)
+            return raw['content']
+        else:
+            print(f"Unsupported file type: {mime_type_exif}")
+    except Exception as e:
+        print(f"Error occurred while processing file: {file}. Error message: {str(e)}")
+    return
 
 def list_files(directory):
     file_paths = []
